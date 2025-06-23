@@ -317,6 +317,8 @@ The test suite exceeds the target of 70% code coverage across the application, r
 
 Key components like controllers, middleware, routes, and the in-memory database implementation have 100% coverage. For detailed coverage information, see the [coverage report](./coverage-report.md).
 
+![Test Coverage Report](./coverage-screenshot.png)
+
 ### Test Structure
 
 - **Unit Tests**: Located in `tests/unit/`. Test individual components in isolation.
