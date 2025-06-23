@@ -18,9 +18,7 @@ class Vendor {
           if (orgId) match = match && vendor.org_id === orgId;
           return match;
         });
-      }
-
-      // Sort by created_at in descending order
+      } // Sort by created_at in descending order
       vendors.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
       return vendors;
@@ -73,16 +71,20 @@ class Vendor {
     try {
       // Check if vendor exists and check permissions
       const existingVendor = await this.getById(id, userId, orgId);
-      if (!existingVendor) return null;
+      if (!existingVendor) return null; // Only update the fields that are provided
+      const updateFields = {};
+      if (vendorData.name !== undefined) updateFields.name = vendorData.name;
+      if (vendorData.category !== undefined)
+        updateFields.category = vendorData.category;
+      if (vendorData.contact_email !== undefined)
+        updateFields.contact_email = vendorData.contact_email;
+      if (vendorData.phone_number !== undefined)
+        updateFields.phone_number = vendorData.phone_number;
+      if (vendorData.address !== undefined)
+        updateFields.address = vendorData.address;
 
       // Update vendor in in-memory database
-      const updatedVendor = inMemoryDb.updateVendor(id, {
-        name: vendorData.name,
-        category: vendorData.category,
-        contact_email: vendorData.contact_email,
-        phone_number: vendorData.phone_number,
-        address: vendorData.address,
-      });
+      const updatedVendor = inMemoryDb.updateVendor(id, updateFields);
 
       return updatedVendor;
     } catch (error) {

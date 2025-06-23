@@ -288,9 +288,55 @@ When a user is authenticated, the system automatically:
 
 ## Testing
 
+### Automated Tests
+
+The Vendor Management API comes with a comprehensive test suite covering unit, integration, and end-to-end API tests.
+
+#### Run All Tests
+
+```bash
+npm test
+```
+
+#### Generate Test Coverage Report
+
+```bash
+npm run test:coverage
+```
+
+This will run all tests and generate a coverage report in the `coverage` directory. The report includes information about which parts of the codebase are tested and the code coverage percentage.
+
+#### Test Coverage
+
+The test suite exceeds the target of 70% code coverage across the application, reaching approximately 79% overall coverage. The coverage report shows:
+
+- Statement coverage: 78.94%
+- Branch coverage: 85.89%
+- Function coverage: 81.25%
+- Line coverage: 77.99%
+
+Key components like controllers, middleware, routes, and the in-memory database implementation have 100% coverage. For detailed coverage information, see the [coverage report](./coverage-report.md).
+
+### Test Structure
+
+- **Unit Tests**: Located in `tests/unit/`. Test individual components in isolation.
+
+  - Model tests: Verify the vendor model functions correctly
+  - Controller tests: Ensure controllers handle requests and responses properly
+  - Middleware tests: Test authentication middleware functionality
+
+- **Integration Tests**: Located in `tests/integration/`. Test how components work together.
+
+  - Route integration: Test API routes with database operations
+
+- **API Tests**: Located in `tests/api/`. End-to-end tests verifying the full API functionality.
+  - CRUD lifecycle: Test creating, reading, updating, and deleting vendors
+  - Error handling: Test API error responses
+  - Multi-tenancy: Verify data isolation between users
+
 ### Manual API Testing
 
-You can test the API using tools like Postman, curl, or any HTTP client:
+You can also manually test the API using tools like Postman, curl, or any HTTP client:
 
 #### Get All Vendors
 
