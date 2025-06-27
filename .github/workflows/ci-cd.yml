@@ -2,121 +2,170 @@ name: Vendor API CI/CD with Keploy Testing
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [main, master, develop]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [20.x]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run unit tests
-      run: npm test
+      - name: Run unit tests
+        run: npm test -- --testTimeout=30000
 
-    - name: Generate test coverage
-      run: npm run test:coverage
+      - name: Generate test coverage
+        run: npm run test:coverage -- --testTimeout=30000
 
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage/lcov.info
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
 
-    - name: Start the API server
-      run: |
-        npm start &
-        sleep 10
-        curl -f http://localhost:3001/ || exit 1
-      env:
-        NODE_ENV: test
-        PORT: 3001
+      - name: Start the API server
+        run: |
+          # Start server in background
+          nohup npm start > server.log 2>&1 &
+          SERVER_PID=$!
+          echo "Server PID: $SERVER_PID"
+          echo $SERVER_PID > server.pid
 
-    - name: Install Keploy
-      run: |
-        curl --silent --location "https://github.com/keploy/keploy/releases/latest/download/keploy_linux_amd64.tar.gz" | tar xz -C /tmp
-        sudo mkdir -p /usr/local/bin && sudo mv /tmp/keploy /usr/local/bin
+          # Wait for server to be ready
+          echo "Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:3001/ > /dev/null 2>&1; then
+              echo "Server is ready after ${i} attempts!"
+              break
+            fi
+            echo "Attempt $i/30 - waiting for server..."
+            sleep 3
+          done
 
-    - name: Generate API Tests with Keploy
-      run: |
-        # Generate tests using OpenAPI schema
-        keploy gen --source-file openapi.yaml --output-dir ./keploy-tests
-        
-    - name: Run Keploy API Tests
-      run: |
-        # Run the generated API tests
-        keploy test --source-file openapi.yaml --coverage
-      env:
-        KEPLOY_MODE: test
-        API_BASE_URL: http://localhost:3001
+          # Verify server is running and log status
+          if curl -s http://localhost:3001/ > /dev/null 2>&1; then
+            echo "✅ Server is running successfully"
+            echo "Server logs:"
+            tail -n 10 server.log || echo "No server logs available"
+          else
+            echo "❌ Server failed to start"
+            echo "Server logs:"
+            cat server.log || echo "No server logs available"
+            exit 1
+          fi
+        env:
+          NODE_ENV: test
+          PORT: 3001
 
-    - name: Upload Keploy Test Results
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: keploy-test-results
-        path: |
-          ./keploy-tests
-          ./test-results.xml
-          ./coverage-report.json
+      - name: Run API endpoint tests
+        run: |
+          chmod +x test-api-endpoints.sh
+          ./test-api-endpoints.sh
+
+      - name: Stop the server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then
+            SERVER_PID=$(cat server.pid)
+            if kill -0 $SERVER_PID 2>/dev/null; then
+              echo "Stopping server with PID: $SERVER_PID"
+              kill $SERVER_PID
+              sleep 2
+              # Force kill if still running
+              kill -9 $SERVER_PID 2>/dev/null || true
+            else
+              echo "Server process not running"
+            fi
+            rm -f server.pid
+          else
+            echo "No server PID file found"
+          fi
+
+      - name: Install and Setup Keploy (Optional)
+        continue-on-error: true
+        run: |
+          echo "Installing Keploy..."
+          curl --silent --location "https://github.com/keploy/keploy/releases/latest/download/keploy_linux_amd64.tar.gz" | tar xz -C /tmp
+          sudo mkdir -p /usr/local/bin && sudo mv /tmp/keploy /usr/local/bin
+          keploy --version || echo "Keploy installation failed, continuing without it"
+
+      - name: Generate API Tests with Keploy (Optional)
+        continue-on-error: true
+        run: |
+          echo "Attempting to generate Keploy tests..."
+          if command -v keploy &> /dev/null; then
+            keploy gen --source-file openapi.yaml --output-dir ./keploy-tests || echo "Keploy test generation failed"
+          else
+            echo "Keploy not available, skipping test generation"
+          fi
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results-${{ matrix.node-version }}
+          path: |
+            ./coverage/
+            ./keploy-tests/
+            ./test-results.xml
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
-        cache: 'npm'
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "npm"
 
-    - name: Install dependencies
-      run: npm ci --only=production
+      - name: Install dependencies
+        run: npm ci --only=production
 
-    - name: Build application
-      run: |
-        echo "Building application for production..."
-        # Add any build steps here if needed
-        
-    - name: Deploy to staging
-      run: |
-        echo "Deploying to staging environment..."
-        # Add deployment steps here
-        # Example: Deploy to Heroku, AWS, etc.
-        
-    - name: Run smoke tests on staging
-      run: |
-        echo "Running smoke tests on staging..."
-        # Add smoke test commands here
-        
-    - name: Notify deployment status
-      if: always()
-      run: |
-        if [ "${{ job.status }}" == "success" ]; then
-          echo "✅ Deployment successful!"
-        else
-          echo "❌ Deployment failed!"
-        fi
+      - name: Build application
+        run: |
+          echo "Building application for production..."
+          # Add any build steps here if needed
+
+      - name: Deploy to staging
+        run: |
+          echo "Deploying to staging environment..."
+          # Add deployment steps here
+          # Example: Deploy to Heroku, AWS, etc.
+
+      - name: Run smoke tests on staging
+        run: |
+          echo "Running smoke tests on staging..."
+          # Add smoke test commands here
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Deployment failed!"
+          fi

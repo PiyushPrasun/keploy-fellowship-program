@@ -17,6 +17,7 @@ A comprehensive OpenAPI 3.0.3 specification has been created that includes:
 - **Validation Rules**: Input validation specifications
 
 **Key Features**:
+
 - 📋 5 vendor management endpoints (GET, POST, PUT, DELETE)
 - 🔐 2 authentication endpoints (login, register)
 - 📊 Detailed response schemas with examples
@@ -34,6 +35,7 @@ Keploy has been integrated for AI-powered API testing:
 - **Coverage Analysis**: Comprehensive test coverage reporting
 
 **Commands**:
+
 ```bash
 # Generate AI tests
 keploy gen --source-file openapi.yaml --output-dir ./keploy-tests
@@ -49,6 +51,7 @@ keploy test --source-file openapi.yaml --coverage
 A comprehensive GitHub Actions pipeline that includes:
 
 **Testing Phase**:
+
 - ✅ Multi-Node.js version testing (18.x, 20.x)
 - ✅ Unit test execution with Jest
 - ✅ Test coverage generation and reporting
@@ -57,6 +60,7 @@ A comprehensive GitHub Actions pipeline that includes:
 - ✅ Test artifact uploads
 
 **Deployment Phase**:
+
 - 🚀 Automated staging deployment
 - 🧪 Smoke testing on staging environment
 - 📢 Deployment status notifications
@@ -66,6 +70,7 @@ A comprehensive GitHub Actions pipeline that includes:
 **File**: [`test-runner.sh`](./test-runner.sh)
 
 A comprehensive testing script that:
+
 - Runs all test suites (unit, integration, API)
 - Integrates Keploy AI testing
 - Performs manual API endpoint verification
@@ -73,6 +78,7 @@ A comprehensive testing script that:
 - Provides colored console output for better UX
 
 **Usage**:
+
 ```bash
 npm run test:all
 ```
@@ -82,6 +88,7 @@ npm run test:all
 **File**: [`api-test-commands.md`](./api-test-commands.md)
 
 A collection of curl commands for manual API testing covering:
+
 - ✅ All CRUD operations
 - ✅ Error handling scenarios
 - ✅ Authentication flows
@@ -113,11 +120,13 @@ The CI/CD pipeline includes the following stages:
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18.x or 20.x
 - npm or yarn
 - Git
 
 ### Quick Start
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -134,6 +143,7 @@ npm start
 ```
 
 ### Keploy Setup (Optional)
+
 ```bash
 # Install Keploy (Linux/Mac)
 curl --silent --location "https://github.com/keploy/keploy/releases/latest/download/keploy_linux_amd64.tar.gz" | tar xz -C /tmp
@@ -147,12 +157,14 @@ keploy test --source-file openapi.yaml
 ## 📈 Benefits Achieved
 
 ### Before AI Testing:
+
 - ❌ Manual test case writing
 - ❌ Limited edge case coverage
 - ❌ Time-consuming test maintenance
 - ❌ Inconsistent test scenarios
 
 ### After AI Testing with Keploy:
+
 - ✅ Automated test generation from OpenAPI schema
 - ✅ Intelligent edge case discovery
 - ✅ Zero-maintenance test updates

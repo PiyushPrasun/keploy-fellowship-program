@@ -344,6 +344,7 @@ Key components like controllers, middleware, routes, and the in-memory database 
 This project includes a comprehensive OpenAPI 3.0.3 specification that documents all API endpoints, request/response schemas, and authentication methods. The schema file is located at [`openapi.yaml`](./openapi.yaml).
 
 You can view the API documentation by:
+
 1. Using Swagger UI: Copy the content of `openapi.yaml` to [Swagger Editor](https://editor.swagger.io/)
 2. Using tools like Postman by importing the OpenAPI schema
 3. Generating documentation with tools like ReDoc
@@ -353,6 +354,7 @@ You can view the API documentation by:
 This project is integrated with [Keploy](https://keploy.io) for AI-powered API testing. Keploy automatically generates comprehensive test cases based on the OpenAPI schema and real API traffic.
 
 #### Testing Features:
+
 - **Automated Test Generation**: Tests are auto-generated from the OpenAPI schema
 - **AI-Driven Test Cases**: Intelligent test scenarios covering edge cases
 - **Regression Testing**: Automatic detection of API behavior changes
