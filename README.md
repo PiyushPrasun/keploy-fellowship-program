@@ -646,6 +646,18 @@ PORT=3002 npm start
 # Check .env file for correct database configuration
 ```
 
+#### GitHub Actions Issues
+
+**Problem**: Workflow fails due to deprecated actions
+**Solutions**:
+- Update to latest action versions:
+  - `actions/upload-artifact@v4` (not v3)
+  - `codecov/codecov-action@v4` (not v3)
+  - `actions/checkout@v4`
+  - `actions/setup-node@v4`
+- Check GitHub's changelog for deprecation notices
+- Monitor workflow runs for warnings about deprecated features
+
 ### Getting Help
 
 1. **Check Logs**: Always check server logs and test output first
