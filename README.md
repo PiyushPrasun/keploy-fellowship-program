@@ -16,7 +16,8 @@ A comprehensive RESTful API for managing vendor information, built with Node.js 
 10. [Running the Application](#running-the-application)
 11. [Implementation Details](#implementation-details)
 12. [Testing](#testing)
-13. [Deployment](#deployment)
+13. [CI/CD Integration](#cicd-integration)
+14. [Deployment](#deployment)
 
 ## Overview
 
@@ -336,6 +337,44 @@ Key components like controllers, middleware, routes, and the in-memory database 
   - Error handling: Test API error responses
   - Multi-tenancy: Verify data isolation between users
 
+### API Documentation & Testing
+
+### OpenAPI Schema
+
+This project includes a comprehensive OpenAPI 3.0.3 specification that documents all API endpoints, request/response schemas, and authentication methods. The schema file is located at [`openapi.yaml`](./openapi.yaml).
+
+You can view the API documentation by:
+1. Using Swagger UI: Copy the content of `openapi.yaml` to [Swagger Editor](https://editor.swagger.io/)
+2. Using tools like Postman by importing the OpenAPI schema
+3. Generating documentation with tools like ReDoc
+
+### AI-Powered API Testing with Keploy
+
+This project is integrated with [Keploy](https://keploy.io) for AI-powered API testing. Keploy automatically generates comprehensive test cases based on the OpenAPI schema and real API traffic.
+
+#### Testing Features:
+- **Automated Test Generation**: Tests are auto-generated from the OpenAPI schema
+- **AI-Driven Test Cases**: Intelligent test scenarios covering edge cases
+- **Regression Testing**: Automatic detection of API behavior changes
+- **Coverage Analysis**: Comprehensive test coverage reporting
+
+#### Running Keploy Tests:
+
+```bash
+# Install Keploy (Linux/Mac)
+curl --silent --location "https://github.com/keploy/keploy/releases/latest/download/keploy_linux_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/keploy /usr/local/bin
+
+# Generate tests from OpenAPI schema
+keploy gen --source-file openapi.yaml --output-dir ./keploy-tests
+
+# Start the API server
+npm start
+
+# Run Keploy tests
+keploy test --source-file openapi.yaml --coverage
+```
+
 ### Manual API Testing
 
 You can also manually test the API using tools like Postman, curl, or any HTTP client:
@@ -470,6 +509,38 @@ The API provides clear error messages with appropriate HTTP status codes:
 - `403 Forbidden`: Insufficient permissions
 - `404 Not Found`: Resource not found
 - `500 Internal Server Error`: Server-side issues
+
+## CI/CD Integration
+
+This project includes a comprehensive CI/CD pipeline using GitHub Actions that integrates automated testing, including AI-powered API testing with Keploy.
+
+### Pipeline Features:
+
+- **Multi-Node Testing**: Tests run on Node.js 18.x and 20.x
+- **Unit & Integration Tests**: Complete Jest test suite execution
+- **Code Coverage**: Automated coverage reporting with Codecov integration
+- **AI API Testing**: Keploy integration for intelligent API testing
+- **Automated Deployment**: Staging deployment on successful tests
+
+### Pipeline Stages:
+
+1. **Code Checkout & Setup**: Environment preparation
+2. **Dependency Installation**: npm ci for consistent installs
+3. **Unit Testing**: Jest test suite execution
+4. **Coverage Generation**: Test coverage analysis
+5. **API Server Startup**: Development server initialization
+6. **Keploy Integration**: AI-powered API test generation and execution
+7. **Deployment**: Automated staging deployment (on main branch)
+
+### Workflow File:
+
+The CI/CD configuration is defined in [`.github/workflows/ci-cd.yml`](./.github/workflows/ci-cd.yml).
+
+### Test Results:
+
+All test results, including Keploy AI testing reports, are automatically uploaded as artifacts and can be viewed in the GitHub Actions interface.
+
+![CI/CD Pipeline Status](https://github.com/yourusername/vendor-api/workflows/Vendor%20API%20CI/CD%20with%20Keploy%20Testing/badge.svg)
 
 ## Deployment
 

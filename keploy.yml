@@ -1,0 +1,27 @@
+version: api/v1beta1
+kind: config
+metadata:
+  name: vendor-api-config
+spec:
+  app:
+    name: vendor-management-api
+    port: 3001
+  server:
+    port: 16789
+    proxyPort: 16790
+  test:
+    path: "./keploy-tests"
+    globalNoise:
+      global:
+        body: {
+          "created_at": "2025-06-28T.*",
+          "id": "\\d+"
+        }
+        header: {
+          "Date": ".*",
+          "X-Request-Id": ".*"
+        }
+    selectedTests:
+      - "test-1"
+      - "test-2"
+      - "test-3"

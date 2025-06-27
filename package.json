@@ -6,10 +6,12 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
+    "test:all": "chmod +x test-runner.sh && ./test-runner.sh",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "setup-db": "node src/config/setupDb.js",
-    "seed-db": "node src/config/seedDb.js"
+    "seed-db": "node src/config/seedDb.js",
+    "api:test": "curl -f http://localhost:3001/api/vendors || echo 'API server not running'"
   },
   "keywords": [],
   "author": "",

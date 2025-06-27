@@ -1,0 +1,458 @@
+openapi: 3.0.3
+info:
+  title: Vendor Management System API
+  description: A comprehensive RESTful API for managing vendor information with multi-tenancy support
+  version: 1.0.0
+  contact:
+    name: Development Team
+    email: dev@vendorapi.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3001
+    description: Development server
+  - url: https://your-production-api.com
+    description: Production server
+
+paths:
+  /api/vendors:
+    get:
+      summary: Get all vendors
+      description: Retrieve a list of all vendors with optional user/org filtering
+      tags:
+        - Vendors
+      security:
+        - BearerAuth: []
+        - {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  count:
+                    type: integer
+                    example: 2
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Vendor'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: Create a new vendor
+      description: Create a new vendor record
+      tags:
+        - Vendors
+      security:
+        - BearerAuth: []
+        - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorInput'
+      responses:
+        '201':
+          description: Vendor created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Vendor'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/vendors/{id}:
+    get:
+      summary: Get vendor by ID
+      description: Retrieve a specific vendor by their ID
+      tags:
+        - Vendors
+      security:
+        - BearerAuth: []
+        - {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Vendor ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Vendor'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update vendor
+      description: Update an existing vendor record
+      tags:
+        - Vendors
+      security:
+        - BearerAuth: []
+        - {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Vendor ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorUpdate'
+      responses:
+        '200':
+          description: Vendor updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Vendor'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: Delete vendor
+      description: Delete an existing vendor record
+      tags:
+        - Vendors
+      security:
+        - BearerAuth: []
+        - {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Vendor ID
+      responses:
+        '200':
+          description: Vendor deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Vendor deleted successfully"
+                  data:
+                    type: object
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/auth/login:
+    post:
+      summary: User login
+      description: Authenticate user and return JWT token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/auth/register:
+    post:
+      summary: User registration
+      description: Register a new user account
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Vendor:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "ABC Supplies"
+        category:
+          type: string
+          example: "Office Supplies"
+        contact_email:
+          type: string
+          format: email
+          example: "info@abcsupplies.com"
+        phone_number:
+          type: string
+          example: "123-456-7890"
+        address:
+          type: string
+          example: "123 Main St, City, Country"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-06-28T12:00:00Z"
+        user_id:
+          type: integer
+          nullable: true
+          example: null
+        org_id:
+          type: integer
+          nullable: true
+          example: null
+
+    VendorInput:
+      type: object
+      required:
+        - name
+        - category
+      properties:
+        name:
+          type: string
+          example: "New Vendor Inc"
+          minLength: 1
+        category:
+          type: string
+          example: "Consulting"
+          minLength: 1
+        contact_email:
+          type: string
+          format: email
+          example: "info@newvendor.com"
+        phone_number:
+          type: string
+          example: "555-123-4567"
+        address:
+          type: string
+          example: "789 Business Rd, City, Country"
+
+    VendorUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Updated Vendor Inc"
+        category:
+          type: string
+          example: "Professional Consulting"
+        contact_email:
+          type: string
+          format: email
+          example: "support@updatedvendor.com"
+        phone_number:
+          type: string
+          example: "555-123-4567"
+        address:
+          type: string
+          example: "789 Business Rd, City, Country"
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        name:
+          type: string
+          example: "John Doe"
+        role:
+          type: string
+          example: "user"
+        org_id:
+          type: integer
+          nullable: true
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-06-28T12:00:00Z"
+
+    UserRegistration:
+      type: object
+      required:
+        - email
+        - password
+        - name
+      properties:
+        email:
+          type: string
+          format: email
+          example: "newuser@example.com"
+        password:
+          type: string
+          format: password
+          example: "securepassword123"
+        name:
+          type: string
+          example: "Jane Smith"
+        org_id:
+          type: integer
+          example: 1
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Error message"
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: "Please provide name and category for the vendor"
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: "No authentication token, access denied"
+
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: "Vendor not found"
+
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: "Server error while processing request"
+
+tags:
+  - name: Vendors
+    description: Operations related to vendor management
+  - name: Authentication
+    description: Operations related to user authentication
