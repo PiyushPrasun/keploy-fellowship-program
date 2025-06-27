@@ -18,6 +18,7 @@ A comprehensive RESTful API for managing vendor information, built with Node.js 
 12. [Testing](#testing)
 13. [CI/CD Integration](#cicd-integration)
 14. [Deployment](#deployment)
+15. [Troubleshooting](#troubleshooting)
 
 ## Overview
 
@@ -573,6 +574,99 @@ For production deployment:
    - Enable CORS for specific origins only
    - Use HTTPS for all communications
    - Implement database connection pooling
+
+## Troubleshooting
+
+### Common Issues
+
+#### CI/CD Pipeline Failures
+
+**Problem**: Tests fail in GitHub Actions but pass locally
+**Solutions**:
+- Check that all dependencies are correctly specified in `package.json`
+- Ensure test timeouts are sufficient (current: 30 seconds)
+- Verify server startup process in CI logs
+- Check for port conflicts or resource limitations
+
+**Problem**: Server fails to start in CI
+**Solutions**:
+- Review server logs in GitHub Actions output
+- Ensure proper environment variables are set
+- Check that all required files are committed to git
+- Verify Node.js version compatibility
+
+#### API Testing Issues
+
+**Problem**: API endpoint tests fail
+**Solutions**:
+```bash
+# Test locally first
+npm start &
+# Wait for server to start, then:
+curl http://localhost:3001/
+curl http://localhost:3001/api/vendors
+
+# Use the dedicated test script:
+chmod +x test-api-endpoints.sh
+./test-api-endpoints.sh
+```
+
+**Problem**: Tests hang or timeout
+**Solutions**:
+- Increase test timeout: `npm test -- --testTimeout=60000`
+- Check for unclosed database connections
+- Ensure proper server cleanup in tests
+
+#### Local Development Issues
+
+**Problem**: "Cannot find module" errors
+**Solutions**:
+```bash
+# Clean install dependencies
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**Problem**: Port already in use
+**Solutions**:
+```bash
+# Kill process using port 3001
+npx kill-port 3001
+# Or use different port
+PORT=3002 npm start
+```
+
+#### Database Connection Issues
+
+**Problem**: Database connection refused
+**Solutions**:
+```bash
+# For production, ensure database is running and credentials are correct
+# For development, the app uses in-memory database by default
+# Check .env file for correct database configuration
+```
+
+### Getting Help
+
+1. **Check Logs**: Always check server logs and test output first
+2. **Environment**: Verify NODE_ENV and other environment variables
+3. **Dependencies**: Ensure all packages are installed with correct versions
+4. **Documentation**: Review API documentation and examples
+5. **Issues**: Create GitHub issues for persistent problems
+
+### Performance Optimization
+
+#### For Production:
+- Enable gzip compression
+- Implement caching strategies
+- Use connection pooling for database
+- Monitor memory usage and CPU performance
+- Set up health checks and monitoring
+
+#### For Development:
+- Use nodemon for auto-restart during development
+- Enable detailed logging for debugging
+- Use development-specific environment variables
 
 ## Conclusion
 

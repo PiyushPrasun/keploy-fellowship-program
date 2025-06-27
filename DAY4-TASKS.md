@@ -183,3 +183,124 @@ keploy test --source-file openapi.yaml
 **Repository**: [GitHub Repository Link]
 **CI/CD Pipeline**: [GitHub Actions Link]
 **API Documentation**: [Swagger UI Link]
+
+# Day 4 Tasks Summary
+
+## ✅ Completed Tasks
+
+### Task 1: OpenAPI Schema & CI/CD Implementation
+
+1. **OpenAPI 3.0.3 Schema** ✅
+   - Created comprehensive `openapi.yaml` with all API endpoints
+   - Includes authentication, vendors CRUD, error responses
+   - Added proper schemas and examples
+
+2. **Keploy AI API Testing Integration** ✅
+   - Configured `keploy.yml` for test generation
+   - Created API test commands documentation
+   - Added Keploy installation and test generation in CI/CD
+
+3. **GitHub Actions CI/CD Pipeline** ✅
+   - Comprehensive workflow with test, coverage, and deployment stages
+   - **Latest Improvements (v2.0)**:
+     - Enhanced server startup with better logging and error detection
+     - Robust API endpoint testing with proper status code validation
+     - Added server cleanup steps to prevent resource leaks
+     - Improved error handling and timeout management
+     - Streamlined to single Node.js version (20.x) for faster builds
+     - Created dedicated API testing scripts for both Linux and Windows
+   - Automated test coverage reporting with Codecov integration
+   - Optional Keploy test generation (continues on error)
+   - Deployment stage with smoke tests
+
+4. **Documentation Updates** ✅
+   - Updated README.md with OpenAPI, Keploy, and CI/CD sections
+   - Added API testing commands and usage examples
+   - Created comprehensive task documentation
+
+## 📁 Files Created/Modified
+
+### New Files:
+- `openapi.yaml` - Complete OpenAPI 3.0.3 specification
+- `keploy.yml` - Keploy configuration for AI-powered testing
+- `api-test-commands.md` - API testing documentation
+- `test-runner.sh` - Unified test runner script
+- `test-api-endpoints.sh` - Robust API endpoint testing (Linux/CI)
+- `test-api-endpoints.ps1` - API endpoint testing (Windows/Local)
+- `.github/workflows/ci-cd.yml` - Complete CI/CD pipeline
+- `DAY4-TASKS.md` - This summary document
+
+### Modified Files:
+- `README.md` - Added Day 4 documentation sections
+- `package.json` - Added API testing scripts
+
+## 🚀 CI/CD Pipeline Features
+
+### Test Stage:
+- **Unit Tests**: Jest with 30s timeout
+- **Coverage**: Generates and uploads to Codecov
+- **API Tests**: Comprehensive endpoint validation
+- **Server Management**: Proper startup, monitoring, and cleanup
+
+### Deploy Stage:
+- **Production Build**: Optimized dependencies
+- **Deployment**: Ready for staging/production
+- **Smoke Tests**: Post-deployment validation
+- **Notifications**: Success/failure reporting
+
+## 🔧 Troubleshooting CI/CD Issues
+
+### Common Problems & Solutions:
+
+1. **Server Startup Issues**:
+   - Enhanced with 30-attempt retry logic
+   - Detailed logging and error reporting
+   - Proper process management and cleanup
+
+2. **API Test Failures**:
+   - Comprehensive status code validation
+   - Better error messages and debugging info
+   - Separate test script for maintainability
+
+3. **Test Timeouts**:
+   - Added 30-second timeout for Jest tests
+   - Improved server readiness detection
+   - Better resource cleanup
+
+### Local Testing:
+```bash
+# Run all tests
+npm test
+
+# Run with coverage
+npm run test:coverage
+
+# Start server and run API tests (Linux/Mac)
+npm start &
+chmod +x test-api-endpoints.sh
+./test-api-endpoints.sh
+
+# Windows PowerShell
+powershell -ExecutionPolicy Bypass -File test-api-endpoints.ps1
+```
+
+## 📊 Current Status
+
+✅ **All primary objectives completed**
+✅ **CI/CD pipeline significantly improved**
+✅ **Comprehensive testing and documentation**
+✅ **Ready for production deployment**
+
+## 🔄 Next Steps (Optional)
+- Monitor CI/CD pipeline performance on GitHub
+- Add more advanced Keploy test scenarios
+- Implement additional deployment targets
+- Add performance testing integration
+
+## 📈 Key Improvements Made
+
+1. **Reliability**: Better error handling and retry logic
+2. **Maintainability**: Separated API tests into dedicated scripts  
+3. **Speed**: Single Node.js version reduces build time
+4. **Debugging**: Enhanced logging and error reporting
+5. **Cleanup**: Proper resource management and server shutdown
