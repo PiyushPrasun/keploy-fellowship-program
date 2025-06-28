@@ -35,10 +35,22 @@ jobs:
           fi
 
       - name: Run unit tests
-        run: npm test -- --testTimeout=30000
+        run: |
+          echo "🧪 Running Jest unit tests..."
+          npm test
+          echo "✅ Unit tests completed"
+        env:
+          NODE_ENV: test
+          CI: true
 
       - name: Generate test coverage
-        run: npm run test:coverage -- --testTimeout=30000
+        run: |
+          echo "📊 Generating test coverage..."
+          npm run test:coverage
+          echo "✅ Coverage generation completed"
+        env:
+          NODE_ENV: test
+          CI: true
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4

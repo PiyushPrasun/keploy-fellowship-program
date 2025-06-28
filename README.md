@@ -583,6 +583,7 @@ For production deployment:
 
 **Problem**: Tests fail in GitHub Actions but pass locally
 **Solutions**:
+
 - Check that all dependencies are correctly specified in `package.json`
 - Ensure test timeouts are sufficient (current: 30 seconds)
 - Verify server startup process in CI logs
@@ -590,6 +591,7 @@ For production deployment:
 
 **Problem**: Server fails to start in CI
 **Solutions**:
+
 - Review server logs in GitHub Actions output
 - Ensure proper environment variables are set
 - Check that all required files are committed to git
@@ -599,6 +601,7 @@ For production deployment:
 
 **Problem**: API endpoint tests fail
 **Solutions**:
+
 ```bash
 # Test locally first
 npm start &
@@ -613,6 +616,7 @@ chmod +x test-api-endpoints.sh
 
 **Problem**: Tests hang or timeout
 **Solutions**:
+
 - Increase test timeout: `npm test -- --testTimeout=60000`
 - Check for unclosed database connections
 - Ensure proper server cleanup in tests
@@ -621,6 +625,7 @@ chmod +x test-api-endpoints.sh
 
 **Problem**: "Cannot find module" errors
 **Solutions**:
+
 ```bash
 # Clean install dependencies
 rm -rf node_modules package-lock.json
@@ -629,6 +634,7 @@ npm install
 
 **Problem**: Port already in use
 **Solutions**:
+
 ```bash
 # Kill process using port 3001
 npx kill-port 3001
@@ -640,6 +646,7 @@ PORT=3002 npm start
 
 **Problem**: Database connection refused
 **Solutions**:
+
 ```bash
 # For production, ensure database is running and credentials are correct
 # For development, the app uses in-memory database by default
@@ -650,6 +657,7 @@ PORT=3002 npm start
 
 **Problem**: Workflow fails due to deprecated actions
 **Solutions**:
+
 - Update to latest action versions:
   - `actions/upload-artifact@v4` (not v3)
   - `codecov/codecov-action@v4` (not v3)
@@ -669,6 +677,7 @@ PORT=3002 npm start
 ### Performance Optimization
 
 #### For Production:
+
 - Enable gzip compression
 - Implement caching strategies
 - Use connection pooling for database
@@ -676,6 +685,7 @@ PORT=3002 npm start
 - Set up health checks and monitoring
 
 #### For Development:
+
 - Use nodemon for auto-restart during development
 - Enable detailed logging for debugging
 - Use development-specific environment variables

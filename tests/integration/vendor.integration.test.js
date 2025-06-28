@@ -10,7 +10,23 @@ jest.mock("../../src/config/inMemoryDb", () =>
 // Import the mocked module for test control
 const mockInMemoryDb = require("../mocks/mockInMemoryDb");
 
+let server;
+
 describe("Vendor API Integration Tests", () => {
+  // Setup server before all tests
+  beforeAll((done) => {
+    server = app.listen(0, done); // Use port 0 for random available port
+  });
+
+  // Clean up server after all tests
+  afterAll((done) => {
+    if (server) {
+      server.close(done);
+    } else {
+      done();
+    }
+  });
+
   // Reset mock database before each test
   beforeEach(() => {
     mockInMemoryDb.reset();

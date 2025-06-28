@@ -9,10 +9,21 @@ jest.mock("../../src/config/inMemoryDb", () =>
 // Import the mocked module for test control
 const mockInMemoryDb = require("../mocks/mockInMemoryDb");
 
+let server;
+
 describe("Vendor API End-to-End Tests", () => {
-  // Reset mock database before all tests
-  beforeAll(() => {
-    mockInMemoryDb.reset();
+  // Setup server before all tests
+  beforeAll((done) => {
+    server = app.listen(0, done); // Use port 0 for random available port
+  });
+
+  // Clean up server after all tests
+  afterAll((done) => {
+    if (server) {
+      server.close(done);
+    } else {
+      done();
+    }
   });
 
   // Test full vendor lifecycle
@@ -20,8 +31,9 @@ describe("Vendor API End-to-End Tests", () => {
     let createdVendorId;
     let authToken;
 
-    // Create auth token for multi-tenancy tests
+    // Reset database and create auth token for this test suite
     beforeAll(() => {
+      mockInMemoryDb.reset();
       authToken = require("jsonwebtoken").sign(
         { user: { id: 1, org_id: 1 } },
         process.env.JWT_SECRET || "test-secret-key"
@@ -122,6 +134,10 @@ describe("Vendor API End-to-End Tests", () => {
 
   // Test error handling
   describe("Error Handling", () => {
+    // Reset database for error handling tests
+    beforeAll(() => {
+      mockInMemoryDb.reset();
+    });
     test("Should return 400 for invalid vendor creation", async () => {
       const invalidVendor = {
         name: "Missing Category Vendor",
@@ -152,6 +168,9 @@ describe("Vendor API End-to-End Tests", () => {
     let user1VendorId, user2VendorId;
 
     beforeAll(() => {
+      // Reset database for multi-tenancy tests
+      mockInMemoryDb.reset();
+      
       // Create tokens for two different users
       user1Token = require("jsonwebtoken").sign(
         { user: { id: 1, org_id: 1 } },

@@ -31,11 +31,16 @@
   },
   "jest": {
     "testEnvironment": "node",
+    "testTimeout": 30000,
+    "forceExit": true,
+    "detectOpenHandles": true,
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
     "collectCoverageFrom": [
       "src/**/*.js"
-    ]
+    ],
+    "verbose": true
   }
 }

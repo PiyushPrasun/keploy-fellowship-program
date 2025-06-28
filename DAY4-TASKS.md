@@ -191,16 +191,19 @@ keploy test --source-file openapi.yaml
 ### Task 1: OpenAPI Schema & CI/CD Implementation
 
 1. **OpenAPI 3.0.3 Schema** ✅
+
    - Created comprehensive `openapi.yaml` with all API endpoints
    - Includes authentication, vendors CRUD, error responses
    - Added proper schemas and examples
 
 2. **Keploy AI API Testing Integration** ✅
+
    - Configured `keploy.yml` for test generation
    - Created API test commands documentation
    - Added Keploy installation and test generation in CI/CD
 
 3. **GitHub Actions CI/CD Pipeline** ✅
+
    - Comprehensive workflow with test, coverage, and deployment stages
    - **Latest Improvements (v2.0)**:
      - Enhanced server startup with better logging and error detection
@@ -221,6 +224,7 @@ keploy test --source-file openapi.yaml
 ## 📁 Files Created/Modified
 
 ### New Files:
+
 - `openapi.yaml` - Complete OpenAPI 3.0.3 specification
 - `keploy.yml` - Keploy configuration for AI-powered testing
 - `api-test-commands.md` - API testing documentation
@@ -231,18 +235,21 @@ keploy test --source-file openapi.yaml
 - `DAY4-TASKS.md` - This summary document
 
 ### Modified Files:
+
 - `README.md` - Added Day 4 documentation sections
 - `package.json` - Added API testing scripts
 
 ## 🚀 CI/CD Pipeline Features
 
 ### Test Stage:
+
 - **Unit Tests**: Jest with 30s timeout
 - **Coverage**: Generates and uploads to Codecov
 - **API Tests**: Comprehensive endpoint validation
 - **Server Management**: Proper startup, monitoring, and cleanup
 
 ### Deploy Stage:
+
 - **Production Build**: Optimized dependencies
 - **Deployment**: Ready for staging/production
 - **Smoke Tests**: Post-deployment validation
@@ -253,11 +260,13 @@ keploy test --source-file openapi.yaml
 ### Common Problems & Solutions:
 
 1. **Server Startup Issues**:
+
    - Enhanced with 30-attempt retry logic
    - Detailed logging and error reporting
    - Proper process management and cleanup
 
 2. **API Test Failures**:
+
    - Comprehensive status code validation
    - Better error messages and debugging info
    - Separate test script for maintainability
@@ -268,6 +277,7 @@ keploy test --source-file openapi.yaml
    - Better resource cleanup
 
 ### Local Testing:
+
 ```bash
 # Run all tests
 npm test
@@ -292,6 +302,7 @@ powershell -ExecutionPolicy Bypass -File test-api-endpoints.ps1
 ✅ **Ready for production deployment**
 
 ## 🔄 Next Steps (Optional)
+
 - Monitor CI/CD pipeline performance on GitHub
 - Add more advanced Keploy test scenarios
 - Implement additional deployment targets
@@ -300,7 +311,7 @@ powershell -ExecutionPolicy Bypass -File test-api-endpoints.ps1
 ## 📈 Key Improvements Made
 
 1. **Reliability**: Better error handling and retry logic
-2. **Maintainability**: Separated API tests into dedicated scripts  
+2. **Maintainability**: Separated API tests into dedicated scripts
 3. **Speed**: Single Node.js version reduces build time
 4. **Debugging**: Enhanced logging and error reporting
 5. **Cleanup**: Proper resource management and server shutdown
@@ -308,12 +319,15 @@ powershell -ExecutionPolicy Bypass -File test-api-endpoints.ps1
 ## 🔄 Recent CI/CD Fixes (Latest Update)
 
 ### GitHub Actions Deprecation Fix
+
 **Issue**: CI/CD pipeline failed due to deprecated GitHub Actions
 **Resolution**: Updated to latest stable versions:
+
 - `actions/upload-artifact`: v3 → v4
 - `codecov/codecov-action`: v3 → v4
 
 ### Current Workflow Status
+
 ✅ **All GitHub Actions updated to latest versions**
 ✅ **Deprecation warnings resolved**
 ✅ **CI/CD pipeline fully compatible with latest GitHub Actions platform**
@@ -321,20 +335,25 @@ powershell -ExecutionPolicy Bypass -File test-api-endpoints.ps1
 ## 🔧 Latest CI/CD Fixes (v3.0)
 
 ### Issue: Dependencies Lock File Not Found
+
 **Problem**: GitHub Actions was failing with "Dependencies lock file is not found" error
 **Root Cause**: `package-lock.json` was in `.gitignore`, preventing npm caching from working
-**Solution**: 
+**Solution**:
+
 - Removed `package-lock.json` from `.gitignore`
 - Committed lock file to repository for consistent dependency resolution
 - Updated workflow to handle both scenarios (with/without lock file)
 
 ### Issue: Deprecated Actions
+
 **Problem**: Using deprecated `actions/upload-artifact@v3` and `codecov/codecov-action@v3`
 **Solution**:
+
 - Updated to `actions/upload-artifact@v4`
 - Updated to `codecov/codecov-action@v4`
 
 ### Workflow Improvements:
+
 - **Robust Dependency Installation**: Handles both `npm ci` and `npm install` scenarios
 - **Better Error Handling**: More detailed error messages and fallback strategies
 - **Consistent Builds**: Lock file ensures identical dependency versions across environments
