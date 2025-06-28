@@ -317,3 +317,24 @@ powershell -ExecutionPolicy Bypass -File test-api-endpoints.ps1
 ✅ **All GitHub Actions updated to latest versions**
 ✅ **Deprecation warnings resolved**
 ✅ **CI/CD pipeline fully compatible with latest GitHub Actions platform**
+
+## 🔧 Latest CI/CD Fixes (v3.0)
+
+### Issue: Dependencies Lock File Not Found
+**Problem**: GitHub Actions was failing with "Dependencies lock file is not found" error
+**Root Cause**: `package-lock.json` was in `.gitignore`, preventing npm caching from working
+**Solution**: 
+- Removed `package-lock.json` from `.gitignore`
+- Committed lock file to repository for consistent dependency resolution
+- Updated workflow to handle both scenarios (with/without lock file)
+
+### Issue: Deprecated Actions
+**Problem**: Using deprecated `actions/upload-artifact@v3` and `codecov/codecov-action@v3`
+**Solution**:
+- Updated to `actions/upload-artifact@v4`
+- Updated to `codecov/codecov-action@v4`
+
+### Workflow Improvements:
+- **Robust Dependency Installation**: Handles both `npm ci` and `npm install` scenarios
+- **Better Error Handling**: More detailed error messages and fallback strategies
+- **Consistent Builds**: Lock file ensures identical dependency versions across environments

@@ -25,7 +25,14 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "Using npm ci for consistent builds"
+            npm ci
+          else
+            echo "Using npm install (no lock file found)"
+            npm install
+          fi
 
       - name: Run unit tests
         run: npm test -- --testTimeout=30000
@@ -143,7 +150,14 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci --only=production
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "Using npm ci for production dependencies"
+            npm ci --only=production
+          else
+            echo "Using npm install for production dependencies"
+            npm install --only=production
+          fi
 
       - name: Build application
         run: |
